@@ -1,42 +1,62 @@
-# Smart Student GPT
+# polymarket
 
-## Polymarket local environment setup
+Local setup repo for generating Polymarket CLOB API credentials into a private `.env` file.
 
-This repo should not contain real credentials. Keep your actual `.env` file local only.
+## Important security rule
 
-1. Install dependencies locally:
+Do not commit `.env`. Do not paste your wallet private key into chat, GitHub, Slack, or any website you do not fully trust.
+
+This repo includes `.gitignore` so `.env` stays local.
+
+## Setup
 
 ```bash
-pip install py-clob-client-v2 python-dotenv
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-2. Create a local `.env` file using the keys returned by your Polymarket CLOB credential script:
+On Windows PowerShell:
 
-```bash
-cp polymarket.env.example .env
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 ```
 
-3. Fill in these local-only values:
+## Generate your Polymarket API key
+
+Run:
 
 ```bash
+python generate_polymarket_env.py
+```
+
+Paste your Polygon private key only into the local terminal prompt. The script will call Polymarket CLOB auth locally and write the generated credentials into `.env`.
+
+The `.env` file will contain:
+
+```env
 POLYMARKET_HOST=https://clob.polymarket.com
 POLYGON_CHAIN_ID=137
-POLYMARKET_API_KEY=your_generated_api_key
-POLYMARKET_SECRET=your_generated_secret
-POLYMARKET_PASSPHRASE=your_generated_passphrase
+PRIVATE_KEY=...
+POLYMARKET_API_KEY=...
+POLYMARKET_SECRET=...
+POLYMARKET_PASSPHRASE=...
 ```
 
-4. Load them in Python:
+## Verify env is present
 
-```python
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-api_key = os.getenv("POLYMARKET_API_KEY")
-secret = os.getenv("POLYMARKET_SECRET")
-passphrase = os.getenv("POLYMARKET_PASSPHRASE")
+```bash
+python check_env.py
 ```
 
-`.gitignore` already excludes `.env`, so the real credential file should stay off GitHub.
+The checker confirms required values exist without printing secrets.
+
+## Files
+
+- `generate_polymarket_env.py` — local-only script that derives/creates Polymarket CLOB credentials.
+- `check_env.py` — verifies required environment variables are present.
+- `requirements.txt` — Python dependencies.
+- `polymarket.env.example` — safe template only.
+- `.gitignore` — prevents `.env` from being committed.
